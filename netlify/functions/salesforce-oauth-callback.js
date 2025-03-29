@@ -5,10 +5,10 @@ export async function handler(event, context) {
 
   // 1. Get the authorization code from the query parameters
   const authorizationCode = event.queryStringParameters.code;
-  const state = event.queryStringParameters.state; // If you used a state parameter
+  //const state = event.queryStringParameters.state; // If you used a state parameter
 
   console.log("Authorization Code:", authorizationCode);
-  console.log("State (if provided):", state);
+  //console.log("State (if provided):", state);
 
   if (!authorizationCode) {
     return {
