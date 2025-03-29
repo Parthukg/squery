@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     loginButton.addEventListener('click', async function() {
         try {
-            const response = await fetch('/.netlify/functions/callout');
+            const response = await fetch('/.netlify/functions/salesforce-oauth-callback');
             if (response.ok) {
                 const data = await response.json();
                 window.location.href = data.authorizationUrl;
