@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Salesforce Query Site</title>
+</head>
+<body>
+    <h1>Connect to Salesforce</h1>
+    <button id="salesforce-login-button">Login with Salesforce</button>
+
+    <script>
+        document.getElementById('salesforce-login-button').addEventListener('click', function() {
+            const clientId = 'YOUR_CONNECTED_APP_CONSUMER_KEY'; // **REPLACE THIS** with your actual Client ID (from Salesforce Connected App)
+            const redirectUri = 'YOUR_NETLIFY_FUNCTION_URL';     // **REPLACE THIS LATER** with your Netlify Function URL (after deployment)
+            const scope = 'api read refresh_token offline_access';
+            const state = generateRandomState();
+
+            const authorizationUrl = `https://login.salesforce.com/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&state=${state}`;
+
+            window.location.href = authorizationUrl;
+        });
+
+        function generateRandomState() {
+            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        }
+    </script>
+</body>
+</html>
