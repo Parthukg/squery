@@ -1,0 +1,17 @@
+[build]
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild"
+
+[functions."callout"]
+  included_files = ["node_modules/node-fetch/**/*"]
+  timeout = 30
+
+[build.environment]
+  NODE_VERSION = "14"
