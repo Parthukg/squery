@@ -3,17 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Your App</title>
-    <link rel="stylesheet" href="your-styles.css">
+    <title>Cool Search Box</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .search-container {
+            position: relative;
+        }
+        .search-box {
+            padding: 10px 20px;
+            width: 300px;
+            border: none;
+            border-radius: 25px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-box:focus {
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            width: 350px;
+        }
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .search-btn:before {
+            content: "🔍";
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Your App</h1>
-    </header>
-    <main>
-        <p>You've successfully logged in via Salesforce!</p>
-        <!-- Add more content and functionality as needed -->
-    </main>
-    <script src="your-homepage-script.js"></script>
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="Search...">
+        <button class="search-btn"></button>
+    </div>
 </body>
 </html>

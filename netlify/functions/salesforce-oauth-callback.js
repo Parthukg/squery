@@ -63,13 +63,22 @@ export async function handler(event, context) {
         const tokenData = await response.json();
         console.log("Token Response from Salesforce:", tokenData);
 
+        // return {
+        //     statusCode: 200,
+        //     body: JSON.stringify({
+        //         message: "Successfully exchanged authorization code for tokens.",
+        //         access_token: tokenData.access_token.substring(0, 10) + '...', // Only return first 10 chars for security
+        //         instance_url: tokenData.instance_url,
+        //     })
+        // };
+
+        // Instead of returning a JSON response, redirect to the search page
         return {
-            statusCode: 200,
-            body: JSON.stringify({
-                message: "Successfully exchanged authorization code for tokens.",
-                access_token: tokenData.access_token.substring(0, 10) + '...', // Only return first 10 chars for security
-                instance_url: tokenData.instance_url,
-            })
+            statusCode: 302, // HTTP status code for redirection
+            headers: {
+                Location: '/homepage.html', // Redirect to the search page
+            },
+            body: '' // Body must be empty for redirects
         };
 
     } catch (error) {
