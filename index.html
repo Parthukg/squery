@@ -12,7 +12,6 @@
             const clientId = '3MVG9VMBZCsTL9hmhU2kry.BmzFeJwTOqgqWhI3UQeUP94JS58TZJjnJSExidA_2e4LfMTof6A89Zi9SFrF0w'; // **REPLACE THIS** with your actual Client ID (from Salesforce Connected App)
             const redirectUri = 'https://salesforcequery.netlify.app/.netlify/functions/salesforce-oauth-callback';
             const scope = 'api read refresh_token offline_access';
-            const state = generateRandomState();
 
             const authorizationUrl = `https://login.salesforce.com/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
