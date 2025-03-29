@@ -10,7 +10,7 @@
     <script>
         document.getElementById('salesforce-login-button').addEventListener('click', function() {
             const clientId = 'YOUR_CONNECTED_APP_CONSUMER_KEY'; // **REPLACE THIS** with your actual Client ID (from Salesforce Connected App)
-            const redirectUri = 'YOUR_NETLIFY_FUNCTION_URL';     // **REPLACE THIS LATER** with your Netlify Function URL (after deployment)
+            const redirectUri = 'https://salesforcequery.netlify.app/.netlify/functions/salesforce-oauth-callback';
             const scope = 'api read refresh_token offline_access';
             const state = generateRandomState();
 
