@@ -48,7 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add this new function to your main.js
     async function handleOAuthCallback() {
+        console.log('handleOAuthCallback' , handleOAuthCallback)
         const urlParams = new URLSearchParams(window.location.search);
+        console.log('urlParams' , urlParams)
         const code = urlParams.get('code');
         const error = urlParams.get('error');
 
