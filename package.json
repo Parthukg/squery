@@ -1,15 +1,23 @@
 {
   "name": "squery",
   "version": "1.0.0",
-  "description": "",
+  "description": "Salesforce OAuth integration with Netlify functions",
   "main": "index.js",
   "scripts": {
+    "start": "netlify dev",
+    "build": "netlify build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "node-fetch": "^2.6.1"
-  }
+  },
+  "devDependencies": {
+    "netlify-cli": "^3.39.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "",
+  "license": "ISC"
 }
