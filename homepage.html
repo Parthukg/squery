@@ -76,6 +76,14 @@
         .logout-btn:hover {
             background-color: #a61a14;
         }
+        #soql-preview, #results {
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
@@ -89,9 +97,10 @@
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
         <div class="search-container">
-            <input type="text" class="search-box" placeholder="Enter your SOQL query...">
+            <input type="text" class="search-box" id="query-input" placeholder="Enter your natural language query...">
             <button class="search-btn" onclick="executeQuery()"></button>
         </div>
+        <div id="soql-preview"></div>
         <div id="results"></div>
     </div>
 
@@ -104,7 +113,6 @@
             if (accessToken && instanceUrl) {
                 console.log('Access Token:', accessToken);
                 console.log('Instance URL:', instanceUrl);
-                // Store tokens securely
                 sessionStorage.setItem('accessToken', accessToken);
                 sessionStorage.setItem('instanceUrl', instanceUrl);
                 document.getElementById('instance-url').textContent = instanceUrl;
@@ -114,9 +122,57 @@
             }
         });
 
-        function executeQuery() {
-            // Implement query execution logic here
-            console.log('Executing query...');
+        async function executeQuery() {
+            const queryInput = document.getElementById('query-input').value;
+            const soqlPreviewDiv = document.getElementById('soql-preview');
+            const resultsDiv = document.getElementById('results');
+            
+            soqlPreviewDiv.textContent = 'Converting to SOQL...';
+            resultsDiv.textContent = 'Processing query...';
+            
+            try {
+                const soqlQuery = await convertToSOQL(queryInput);
+                soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQuery}`;
+                
+                const queryResults = await executeSalesforceQuery(soqlQuery);
+                resultsDiv.textContent = JSON.stringify(queryResults, null, 2);
+            } catch (error) {
+                resultsDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function convertToSOQL(naturalLanguage) {
+            const response = await fetch('/.netlify/functions/convert-to-soql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: naturalLanguage }),
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to convert natural language to SOQL');
+            }
+            
+            const data = await response.json();
+            return data.soql;
+        }
+
+        async function executeSalesforceQuery(soqlQuery) {
+            const accessToken = sessionStorage.getItem('accessToken');
+            const instanceUrl = sessionStorage.getItem('instanceUrl');
+            
+            const response = await fetch(`${instanceUrl}/services/data/v52.0/query?q=${encodeURIComponent(soqlQuery)}`, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to execute Salesforce query');
+            }
+            
+            return await response.json();
         }
 
         function logout() {

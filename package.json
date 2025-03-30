@@ -10,7 +10,9 @@
   },
   "keywords": [],
   "dependencies": {
-    "node-fetch": "^2.6.1"
+    "@google/generative-ai": "^0.24.0",
+    "node-fetch": "^2.6.1",
+    "openai": "^4.90.0"
   },
   "devDependencies": {
     "netlify-cli": "^3.39.0"
