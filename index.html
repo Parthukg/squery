@@ -25,8 +25,8 @@
                 const selectedEnvironment = environmentSelect.value;
                 
                 // Replace these with your actual Salesforce app details
-                const clientId = 'SALESFORCE_CLIENT_ID';
-                const redirectUri = encodeURIComponent('SALESFORCE_CALLBACK_URL');
+                const clientId = process.env.SALESFORCE_CLIENT_ID;
+                const redirectUri = encodeURIComponent(process.env.SALESFORCE_CALLBACK_URL);
                 
                 const authorizationUrl = `${selectedEnvironment}/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
                 
