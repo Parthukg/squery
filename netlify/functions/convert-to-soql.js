@@ -39,7 +39,7 @@ exports.handler = async function(event, context) {
           role: "model",
           parts: [
             {text: "The user wants a SOQL query to count the total number of Account records.\nI need to construct a SOQL query using the `COUNT()` aggregate function on the `Account` object."},
-            {text: "{\n  \"query\": \"SELECT COUNT() FROM Account\"\n}"},
+            {text: "SELECT COUNT() FROM Account\n"},
           ],
         },
         {
@@ -52,7 +52,7 @@ exports.handler = async function(event, context) {
           role: "model",
           parts: [
             {text: "The user is asking a question that is not related to generating a Salesforce SOQL query. I need to respond that this is outside my scope."},
-            {text: "{\n  \"query\": \"That is beyond my scope sorry\"\n}"},
+            {text: "That is beyond my scope sorry\n"},
           ],
         },
       ],
@@ -60,7 +60,7 @@ exports.handler = async function(event, context) {
 
     const result = await chatSession.sendMessage(query);
     const soqlQuery = result.response.text().trim();
-
+    console.log('soqlQuery', soqlQuery)
     return {
       statusCode: 200,
       body: JSON.stringify({ soql: soqlQuery }),
