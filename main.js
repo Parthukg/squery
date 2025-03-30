@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 const data = await response.json();
                 console.log(data)
-                //window.location.href = data.authorizationUrl;
+                window.location.href = data.authorizationUrl;
             } else {
                 console.error('Failed to initiate OAuth');
             }
