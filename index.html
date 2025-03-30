@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Salesforce Query Site</title>
-    <script src="main.js" defer></script>
 </head>
 <body>
     <h1>Connect to Salesforce</h1>
@@ -13,5 +12,31 @@
         </select>
         <button type="submit">Login with Salesforce</button>
     </form>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('salesforce-login-form');
+        const environmentSelect = document.getElementById('salesforce-environment');
+      
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            try {
+                const selectedEnvironment = environmentSelect.value;
+                
+                // Replace these with your actual Salesforce app details
+                const clientId = 'YOUR_SALESFORCE_CLIENT_ID';
+                const redirectUri = encodeURIComponent('YOUR_CALLBACK_URL');
+                
+                const authorizationUrl = `${selectedEnvironment}/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+                
+                console.log('Authorization URL:', authorizationUrl);
+                window.location.href = authorizationUrl;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+    </script>
 </body>
 </html>
