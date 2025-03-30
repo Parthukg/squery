@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 
 function initiateOAuth() {
     const clientId = process.env.SALESFORCE_CLIENT_ID;
+    console.log('clientId', clientId)
     const redirectUri = encodeURIComponent(process.env.SALESFORCE_CALLBACK_URL);
     const loginUrl = 'https://login.salesforce.com/services/oauth2/authorize';
     return `${loginUrl}?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
