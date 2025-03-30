@@ -36,4 +36,44 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
         }
     });
+
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const error = urlParams.get('error');
+
+    if (code || error) {
+        handleOAuthCallback();
+    }
+
+    // Add this new function to your main.js
+    async function handleOAuthCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+
+        if (error) {
+            console.error('OAuth Error:', error);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/.netlify/functions/salesforce-oauth-callback?code=${code}`);
+            if (!response.ok) {
+                throw new Error('Failed to exchange code for token');
+            }
+
+            const data = await response.json();
+            console.log('Login successful:', data);
+
+            // Store tokens securely
+            sessionStorage.setItem('accessToken', data.access_token);
+            sessionStorage.setItem('instanceUrl', data.instance_url);
+
+            // Redirect to homepage
+            window.location.href = 'homepage.html';
+        } catch (error) {
+            console.error('Error during OAuth callback:', error);
+        }
+    }
 });

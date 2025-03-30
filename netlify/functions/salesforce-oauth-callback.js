@@ -47,6 +47,9 @@ export async function handler(event, context) {
     if (event.httpMethod === 'POST') {
         try {
             const { loginUrl } = JSON.parse(event.body);
+            if (!loginUrl) {
+                throw new Error('loginUrl is required');
+            }
             console.log('Received loginUrl:', loginUrl);
             const authorizationUrl = initiateOAuth(loginUrl);
             console.log('Generated authorizationUrl:', authorizationUrl);
@@ -89,9 +92,13 @@ export async function handler(event, context) {
             // For this example, we're just returning a success message with partial token info
             return {
                 statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*', // Be more specific in production
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     message: "Successfully authenticated with Salesforce",
-                    access_token: tokenResponse.access_token.substring(0, 10) + '...', // Only return first 10 chars for security
+                    access_token: tokenResponse.access_token,
                     instance_url: tokenResponse.instance_url
                 })
             };
@@ -99,6 +106,10 @@ export async function handler(event, context) {
             console.error('Error exchanging code for token:', error);
             return {
                 statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*', // Be more specific in production
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ error: "Error during token exchange" })
             };
         }
