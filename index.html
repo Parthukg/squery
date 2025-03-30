@@ -25,7 +25,7 @@
                 const selectedEnvironment = environmentSelect.value;
                 
                 // Replace these with your actual Salesforce app details
-                const clientId = '3MVG9VMBZCsTL9hmhU2kry.BmzFeJwTOqgqWhI3UQeUP94JS58TZJjnJSExidA_2e4LfMTof6A89Zi9SFrF0w';
+                const clientId = '3MVG9VMBZCsTL9hmhU2kry.BmzB5nXrMun.6o5k1RCulC4Q1lHjqN1fqMF7zkU5.BFihu6N96indmT45_2qjI'//'3MVG9VMBZCsTL9hmhU2kry.BmzFeJwTOqgqWhI3UQeUP94JS58TZJjnJSExidA_2e4LfMTof6A89Zi9SFrF0w';
                 const redirectUri = encodeURIComponent('https://salesforcequery.netlify.app/.netlify/functions/salesforce-oauth-callback');
                 
                 const authorizationUrl = `${selectedEnvironment}/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
