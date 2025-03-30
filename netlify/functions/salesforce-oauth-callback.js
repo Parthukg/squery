@@ -11,42 +11,32 @@ function initiateOAuth(loginUrl) {
 
 export async function handler(event, context) {
     console.log('Enter function');
+    console.log('HTTP Method:', event.httpMethod);
+    console.log('Event Body:', event.body);
     
     // Handle POST request for initiating OAuth
     if (event.httpMethod === 'POST') {
-        const { loginUrl } = JSON.parse(event.body);
-        const authorizationUrl = initiateOAuth(loginUrl);
-        console.log('authorizationUrl', authorizationUrl);
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ authorizationUrl })
-        };
+        try {
+            const { loginUrl } = JSON.parse(event.body);
+            console.log('Received loginUrl:', loginUrl);
+            const authorizationUrl = initiateOAuth(loginUrl);
+            console.log('authorizationUrl', authorizationUrl);
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ authorizationUrl })
+            };
+        } catch (error) {
+            console.error('Error processing POST request:', error);
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: "Error processing request: " + error.message })
+            };
+        }
     }
 
     // Handle GET request for OAuth callback
     if (event.httpMethod === 'GET') {
-        if (event.queryStringParameters.error) {
-            console.error('OAuth Error:', event.queryStringParameters.error, event.queryStringParameters.error_description);
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ 
-                    error: event.queryStringParameters.error, 
-                    description: event.queryStringParameters.error_description 
-                })
-            };
-        }
-
-        const authorizationCode = event.queryStringParameters.code;
-
-        if (!authorizationCode) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ error: "No authorization code received." })
-            };
-        }
-
-        // Token Exchange
-        // ... (rest of your token exchange code remains the same)
+        // ... (rest of your GET handling code remains the same)
     }
 
     return {

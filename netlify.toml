@@ -6,11 +6,16 @@
   to = "/index.html"
   status = 200
 
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["node-fetch"]
 
-[functions."callout"]
+[functions."salesforce-oauth-callback"]
   included_files = ["node_modules/node-fetch/**/*"]
   timeout = 30
 
