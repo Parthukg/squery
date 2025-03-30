@@ -132,7 +132,7 @@
             
             try {
                 const soqlQuery = await convertToSOQL(queryInput);
-                soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQuery.query}`;
+                soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQuery}`;
                 
                 const queryResults = await executeSalesforceQuery(soqlQuery);
                 resultsDiv.textContent = JSON.stringify(queryResults, null, 2);
