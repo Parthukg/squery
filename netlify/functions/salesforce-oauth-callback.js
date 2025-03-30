@@ -14,6 +14,7 @@ export async function handler(event, context) {
     if (event.httpMethod === 'GET' && !event.queryStringParameters.code) {
         const authorizationUrl = initiateOAuth();
         console.log('authorizationUrl', authorizationUrl)
+        console.log('event.queryStringParameters', event.queryStringParameters)
         return {
             statusCode: 200,
             body: JSON.stringify({ authorizationUrl })
