@@ -3,23 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cool Search Box</title>
+    <title>Salesforce Query Site - Home</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
             background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #0070d2;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
         }
         .search-container {
             position: relative;
+            margin: 40px 0;
         }
         .search-box {
-            padding: 10px 20px;
-            width: 300px;
+            padding: 15px 20px;
+            width: 100%;
             border: none;
             border-radius: 25px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -29,7 +42,6 @@
         }
         .search-box:focus {
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            width: 350px;
         }
         .search-btn {
             position: absolute;
@@ -44,12 +56,74 @@
             content: "🔍";
             font-size: 20px;
         }
+        .user-info {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .logout-btn {
+            background-color: #c23934;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .logout-btn:hover {
+            background-color: #a61a14;
+        }
     </style>
 </head>
 <body>
-    <div class="search-container">
-        <input type="text" class="search-box" placeholder="Search...">
-        <button class="search-btn"></button>
+    <header>
+        <h1>Salesforce Query Site</h1>
+    </header>
+    <div class="container">
+        <div class="user-info">
+            <h2>Welcome, <span id="user-name">User</span>!</h2>
+            <p>You are connected to: <span id="instance-url"></span></p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Enter your SOQL query...">
+            <button class="search-btn" onclick="executeQuery()"></button>
+        </div>
+        <div id="results"></div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessToken = urlParams.get('access_token');
+            const instanceUrl = urlParams.get('instance_url');
+            
+            if (accessToken && instanceUrl) {
+                console.log('Access Token:', accessToken);
+                console.log('Instance URL:', instanceUrl);
+                // Store tokens securely
+                sessionStorage.setItem('accessToken', accessToken);
+                sessionStorage.setItem('instanceUrl', instanceUrl);
+                document.getElementById('instance-url').textContent = instanceUrl;
+            } else {
+                console.error('No access token or instance URL found');
+                window.location.href = '/index.html';
+            }
+        });
+
+        function executeQuery() {
+            // Implement query execution logic here
+            console.log('Executing query...');
+        }
+
+        function logout() {
+            sessionStorage.removeItem('accessToken');
+            sessionStorage.removeItem('instanceUrl');
+            window.location.href = '/index.html';
+        }
+    </script>
 </body>
 </html>
