@@ -97,10 +97,8 @@
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
         <div class="search-container">
-            <form id="query-form" onsubmit="executeQuery(event)">
-                <input type="text" class="search-box" id="query-input" placeholder="Enter your natural language query...">
-                <button type="submit" class="search-btn"></button>
-            </form>
+            <input type="text" class="search-box" id="query-input" placeholder="Enter your natural language query...">
+            <button class="search-btn" onclick="executeQuery()"></button>
         </div>
         <div id="soql-preview"></div>
         <div id="results"></div>
