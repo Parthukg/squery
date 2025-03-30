@@ -88,29 +88,21 @@ export async function handler(event, context) {
             const tokenResponse = await exchangeCodeForToken(code, loginUrl);
             console.log('Token Response:', tokenResponse);
 
-            // Here you would typically save the access_token, refresh_token, and other details
-            // For this example, we're just returning a success message with partial token info
+            // Redirect to homepage with token information
             return {
-                statusCode: 200,
+                statusCode: 302,
                 headers: {
-                    'Access-Control-Allow-Origin': '*', // Be more specific in production
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: "Successfully authenticated with Salesforce",
-                    access_token: tokenResponse.access_token,
-                    instance_url: tokenResponse.instance_url
-                })
+                    'Location': '/homepage.html?access_token=' + encodeURIComponent(tokenResponse.access_token) +
+                                '&instance_url=' + encodeURIComponent(tokenResponse.instance_url)
+                }
             };
         } catch (error) {
             console.error('Error exchanging code for token:', error);
             return {
-                statusCode: 500,
+                statusCode: 302,
                 headers: {
-                    'Access-Control-Allow-Origin': '*', // Be more specific in production
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ error: "Error during token exchange" })
+                    'Location': '/index.html?error=Error_during_token_exchange'
+                }
             };
         }
     } else {
