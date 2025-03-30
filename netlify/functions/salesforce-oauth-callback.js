@@ -4,7 +4,7 @@ function initiateOAuth(loginUrl) {
     const clientId = process.env.SALESFORCE_CLIENT_ID;
     console.log('clientId', clientId);
     const redirectUri = encodeURIComponent(process.env.SALESFORCE_CALLBACK_URL);
-    const prompt = 'login consent';
+    const prompt = encodeURIComponent('login consent');
     const state = Date.now().toString();
     return `${loginUrl}/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&prompt=${prompt}&state=${state}`;
 }
