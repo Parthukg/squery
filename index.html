@@ -1,17 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salesforce Query Site</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            color: #0070d2;
+            margin-bottom: 1.5rem;
+        }
+        #salesforce-login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        select, button {
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #d8dde6;
+            border-radius: 4px;
+        }
+        select {
+            background-color: white;
+        }
+        button {
+            background-color: #0070d2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #005fb2;
+        }
+        .logo {
+            width: 100px;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Connect to Salesforce</h1>
-    <form id="salesforce-login-form">
-        <select id="salesforce-environment">
-            <option value="https://login.salesforce.com">Production</option>
-            <option value="https://test.salesforce.com">Sandbox</option>
-        </select>
-        <button type="submit">Login with Salesforce</button>
-    </form>
+    <div class="container">
+        <img src="https://www.salesforce.com/content/dam/sfdc-docs/www/logos/logo-salesforce.svg" alt="Salesforce Logo" class="logo">
+        <h1>Connect to Salesforce</h1>
+        <form id="salesforce-login-form">
+            <select id="salesforce-environment">
+                <option value="https://login.salesforce.com">Production</option>
+                <option value="https://test.salesforce.com">Sandbox</option>
+            </select>
+            <button type="submit">Login with Salesforce</button>
+        </form>
+    </div>
 
     <script src="main.js"></script>
 </body>
