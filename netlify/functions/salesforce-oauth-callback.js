@@ -10,17 +10,16 @@ function initiateOAuth(loginUrl) {
 }
 
 export async function handler(event, context) {
-    console.log('Enter function');
-    console.log('HTTP Method:', event.httpMethod);
-    console.log('Event Body:', event.body);
-    
-    // Handle POST request for initiating OAuth
+    console.log('Function invoked. HTTP Method:', event.httpMethod);
+    console.log('Request body:', event.body);
+    console.log('Query parameters:', event.queryStringParameters);
+
     if (event.httpMethod === 'POST') {
         try {
             const { loginUrl } = JSON.parse(event.body);
             console.log('Received loginUrl:', loginUrl);
             const authorizationUrl = initiateOAuth(loginUrl);
-            console.log('authorizationUrl', authorizationUrl);
+            console.log('Generated authorizationUrl:', authorizationUrl);
             return {
                 statusCode: 200,
                 body: JSON.stringify({ authorizationUrl })
@@ -32,15 +31,13 @@ export async function handler(event, context) {
                 body: JSON.stringify({ error: "Error processing request: " + error.message })
             };
         }
+    } else if (event.httpMethod === 'GET') {
+        // Your existing GET handling code
+    } else {
+        console.log('Unsupported HTTP method:', event.httpMethod);
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ error: "Method not allowed" })
+        };
     }
-
-    // Handle GET request for OAuth callback
-    if (event.httpMethod === 'GET') {
-        // ... (rest of your GET handling code remains the same)
-    }
-
-    return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Invalid request method" })
-    };
 }

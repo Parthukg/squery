@@ -3,10 +3,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const environmentSelect = document.getElementById('salesforce-environment');
   
     loginForm.addEventListener('submit', async function(event) {
-        event.preventDefault(); // Prevent form from submitting normally
+        event.preventDefault();
         
         try {
             const selectedEnvironment = environmentSelect.value;
+            console.log('Selected environment:', selectedEnvironment);
+            
             const response = await fetch('/.netlify/functions/salesforce-oauth-callback', {
                 method: 'POST',
                 headers: {
@@ -14,12 +16,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({ loginUrl: selectedEnvironment })
             });
-            console.log('Form submitted.....');
-            console.log(response);
+            
+            console.log('Response status:', response.status);
+            
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
-                window.location.href = data.authorizationUrl;
+                console.log('Response data:', data);
+                if (data.authorizationUrl) {
+                    window.location.href = data.authorizationUrl;
+                } else {
+                    console.error('No authorization URL in response');
+                }
             } else {
                 console.error('Failed to initiate OAuth');
                 const errorData = await response.text();
