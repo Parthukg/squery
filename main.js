@@ -42,38 +42,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const code = urlParams.get('code');
     const error = urlParams.get('error');
 
-    if (code || error) {
-        handleOAuthCallback();
+    console.log('URL parameters:', urlParams.toString());
+    console.log('Code:', code);
+    console.log('Error:', error);
+
+    if (code) {
+        console.log('Code detected, calling handleOAuthCallback');
+        handleOAuthCallback(code);
+    } else if (error) {
+        console.error('OAuth Error:', error);
+    } else {
+        console.log('No code or error in URL parameters');
     }
 
-    // Add this new function to your main.js
-    async function handleOAuthCallback() {
-        console.log('handleOAuthCallback' , handleOAuthCallback)
-        const urlParams = new URLSearchParams(window.location.search);
-        console.log('urlParams' , urlParams)
-        const code = urlParams.get('code');
-        const error = urlParams.get('error');
-
-        if (error) {
-            console.error('OAuth Error:', error);
-            return;
-        }
-
+    async function handleOAuthCallback(code) {
+        console.log('Handling OAuth callback with code:', code);
         try {
             const response = await fetch(`/.netlify/functions/salesforce-oauth-callback?code=${code}`);
+            console.log('Received response from server:', response.status);
+            
             if (!response.ok) {
+                const errorData = await response.text();
+                console.error('Error details:', errorData);
                 throw new Error('Failed to exchange code for token');
             }
-
+    
             const data = await response.json();
-            console.log('Login successful:', data);
-
+            console.log('Login successful. Received data:', data);
+    
             // Store tokens securely
             sessionStorage.setItem('accessToken', data.access_token);
             sessionStorage.setItem('instanceUrl', data.instance_url);
-
+    
+            console.log('Tokens stored in sessionStorage');
+    
             // Redirect to homepage
+            console.log('Attempting to redirect to homepage.html');
             window.location.href = 'homepage.html';
+            
+            // If the above doesn't work, try this:
+            // window.location.replace('homepage.html');
         } catch (error) {
             console.error('Error during OAuth callback:', error);
         }
