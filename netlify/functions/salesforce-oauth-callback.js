@@ -42,9 +42,8 @@ async function exchangeCodeForToken(code, loginUrl) {
 
 function setCookie(name, value, options = {}) {
   const cookieOptions = {
-    HttpOnly: true,
     Secure: true,
-    SameSite: "Strict",
+    SameSite: "Lax",
     "Max-Age": 3600, // 1 hour
     Path: "/",
     ...options,
