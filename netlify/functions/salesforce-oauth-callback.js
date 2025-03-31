@@ -122,12 +122,12 @@ export async function handler(event, context) {
         "sf_instance_url",
         tokenResponse.instance_url
       );
-
+      const combinedCookies = `${accessTokenCookie}, ${instanceUrlCookie}`;
       return {
         statusCode: 302,
         headers: {
           Location: "/homepage.html",
-          "Set-Cookie": `${accessTokenCookie}, ${instanceUrlCookie}`,
+          "Set-Cookie": combinedCookies,
         },
       };
     } catch (error) {
