@@ -67,14 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Failed to exchange code for token');
             }
     
-            const data = await response.json();
             console.log('Login successful. Received data:', data);
-    
-            // Store tokens securely
-            sessionStorage.setItem('accessToken', data.access_token);
-            sessionStorage.setItem('instanceUrl', data.instance_url);
-    
-            console.log('Tokens stored in sessionStorage');
     
             // Redirect to homepage
             console.log('Attempting to redirect to homepage.html');
