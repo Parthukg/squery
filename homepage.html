@@ -109,7 +109,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const accessToken = urlParams.get('access_token');
             const instanceUrl = urlParams.get('instance_url');
-            
+  
             if (accessToken && instanceUrl) {
                 console.log('Access Token:', accessToken);
                 console.log('Instance URL:', instanceUrl);
@@ -124,75 +124,100 @@
 
         async function executeQuery(event) {
             if (event) {
-                event.preventDefault(); // Prevent the form from submitting normally
+                event.preventDefault();
             }
-            
+  
             const queryInput = document.getElementById('query-input').value;
             const soqlPreviewDiv = document.getElementById('soql-preview');
             const resultsDiv = document.getElementById('results');
-            
+  
             soqlPreviewDiv.textContent = 'Converting to SOQL...';
             resultsDiv.textContent = 'Processing query...';
-            
+  
             try {
-                const soqlQueryObj = await convertToSOQL(queryInput);
-                soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQueryObj}`;
-                
-                const queryResults = await executeSalesforceQuery(soqlQueryObj);
+                // First, convert to SOQL
+                const conversionResponse = await fetch('/.netlify/functions/convert-to-soql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: queryInput }),
+                });
+
+                if (!conversionResponse.ok) {
+                    throw new Error('Failed to convert natural language to SOQL');
+                }
+
+                const conversionData = await conversionResponse.json();
+                const soqlQuery = conversionData.soql;
+
+                console.log('SOQL Query:', soqlQuery);
+                soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQuery}`;
+
+                // Then, execute the SOQL query
+                const accessToken = sessionStorage.getItem('accessToken');
+                const instanceUrl = sessionStorage.getItem('instanceUrl');
+
+                if (!accessToken || !instanceUrl) {
+                    throw new Error('Salesforce authentication information not found. Please log in again.');
+                }
+
+                const executionResponse = await fetch('/.netlify/functions/convert-to-soql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: soqlQuery, accessToken, instanceUrl }),
+                });
+
+                if (!executionResponse.ok) {
+                    throw new Error('Failed to execute Salesforce query');
+                }
+
+                const queryResults = await executionResponse.json();
                 displayResults(queryResults);
             } catch (error) {
+                console.error('Error in executeQuery:', error);
                 resultsDiv.textContent = `Error: ${error.message}`;
             }
         }
 
-        async function convertToSOQL(naturalLanguage) {
-            const response = await fetch('/.netlify/functions/convert-to-soql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ query: naturalLanguage }),
-            });
-            
-            if (!response.ok) {
-                throw new Error('Failed to convert natural language to SOQL');
-            }
-            
-            const data = await response.json();
-            return data.soql;
-        }
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = ''; // Clear previous results
 
-        async function executeSalesforceQuery(soqlQueryObj) {
-            const accessToken = sessionStorage.getItem('accessToken');
-            const instanceUrl = sessionStorage.getItem('instanceUrl');
-            
-            if (!accessToken || !instanceUrl) {
-                throw new Error('Salesforce authentication information not found. Please log in again.');
-            }
-        
-            // Extract the actual SOQL query from the object
-            console.log('Converted SOQL data:', soqlQueryObj);
-            console.log('Converted SOQL datatype:', typeof soqlQueryObj);
-            const soqlQuery = JSON.parse(soqlQueryObj).query;
-        
-            if (!soqlQuery) {
-                throw new Error('Invalid SOQL query format');
-            }
-        
-            const response = await fetch(`${instanceUrl}/services/data/v52.0/query?q=${encodeURIComponent(soqlQuery)}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
+            if (results.records && results.records.length > 0) {
+                const table = document.createElement('table');
+                table.border = '1';
+                table.style.borderCollapse = 'collapse';
+
+                // Create header row
+                const headerRow = table.insertRow();
+                for (const key in results.records[0]) {
+                    if (key !== 'attributes') {
+                        const th = document.createElement('th');
+                        th.textContent = key;
+                        th.style.padding = '5px';
+                        headerRow.appendChild(th);
+                    }
                 }
-            });
-        
-            if (!response.ok) {
-                const errorBody = await response.text();
-                throw new Error(`Salesforce API error: ${response.status} ${response.statusText}\n${errorBody}`);
+
+                // Create data rows
+                results.records.forEach(record => {
+                    const row = table.insertRow();
+                    for (const key in record) {
+                        if (key !== 'attributes') {
+                            const cell = row.insertCell();
+                            cell.textContent = record[key];
+                            cell.style.padding = '5px';
+                        }
+                    }
+                });
+
+                resultsDiv.appendChild(table);
+            } else {
+                resultsDiv.textContent = 'No results found.';
             }
-        
-            return await response.json();
         }
 
         function logout() {
