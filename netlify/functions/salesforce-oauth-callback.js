@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import cookie from 'cookie';
 
 function initiateOAuth(loginUrl) {
     const clientId = process.env.SALESFORCE_CLIENT_ID;
@@ -87,13 +88,28 @@ export async function handler(event, context) {
         try {
             const tokenResponse = await exchangeCodeForToken(code, loginUrl);
             console.log('Token Response:', tokenResponse);
+            
+            const accessTokenCookie = cookie.serialize('sf_access_token', tokenResponse.access_token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+                maxAge: 3600, // 1 hour
+                path: '/'
+            });
 
+            const instanceUrlCookie = cookie.serialize('sf_instance_url', tokenResponse.instance_url, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+                maxAge: 3600, // 1 hour
+                path: '/'
+            });
             // Redirect to homepage with token information
             return {
                 statusCode: 302,
                 headers: {
-                    'Location': '/homepage.html?access_token=' + encodeURIComponent(tokenResponse.access_token) +
-                                '&instance_url=' + encodeURIComponent(tokenResponse.instance_url)
+                    'Location': '/homepage.html',
+                    'Set-Cookie': [accessTokenCookie, instanceUrlCookie]
                 }
             };
         } catch (error) {
