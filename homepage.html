@@ -152,6 +152,7 @@
                 const soqlQuery = conversionData.soql;
 
                 console.log('SOQL Query:', soqlQuery);
+                soqlQuery = JSON.parse(soqlQuery).query;
                 soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQuery}`;
 
                 // Then, execute the SOQL query
@@ -183,6 +184,7 @@
         }
 
         function displayResults(results) {
+            console.log(JSON.stringify(results))
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = ''; // Clear previous results
 
