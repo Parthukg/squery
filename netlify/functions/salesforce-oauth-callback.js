@@ -127,7 +127,9 @@ export async function handler(event, context) {
         statusCode: 302,
         headers: {
           Location: "/homepage.html",
-          "Set-Cookie": combinedCookies,
+        },
+        multiValueHeaders: {
+          "Set-Cookie": [accessTokenCookie, instanceUrlCookie],
         },
       };
     } catch (error) {
