@@ -114,10 +114,10 @@
       document.addEventListener("DOMContentLoaded", function () {
         const accessToken = getCookie("sf_access_token");
         const instanceUrl = getCookie("sf_instance_url");
-        
+        console.log("Access Token:", accessToken);
+        console.log("Instance URL:", instanceUrl);
+
         if (accessToken && instanceUrl) {
-          console.log("Access Token:", accessToken);
-          console.log("Instance URL:", instanceUrl);
           document.getElementById("instance-url").textContent = instanceUrl;
         } else {
           console.error("No access token or instance URL found");
