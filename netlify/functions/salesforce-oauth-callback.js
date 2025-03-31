@@ -37,7 +37,26 @@ async function exchangeCodeForToken(code, loginUrl) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return await response.json();
+  const tokenResponse = await response.json();
+
+  // Fetch user info
+  const userInfoResponse = await fetch(`${tokenResponse.instance_url}/services/oauth2/userinfo`, {
+    headers: {
+      'Authorization': `Bearer ${tokenResponse.access_token}`
+    }
+  });
+
+  if (!userInfoResponse.ok) {
+    throw new Error(`Failed to fetch user info: ${userInfoResponse.status}`);
+  }
+
+  const userInfo = await userInfoResponse.json();
+
+  return {
+    ...tokenResponse,
+    user_name: userInfo.name,
+    user_email: userInfo.email
+  };
 }
 
 function setCookie(name, value, options = {}) {
@@ -121,6 +140,14 @@ export async function handler(event, context) {
         "sf_instance_url",
         tokenResponse.instance_url
       );
+      const userNameCookie = setCookie(
+        "sf_user_name",
+        tokenResponse.user_name
+      );
+      const userEmailCookie = setCookie(
+        "sf_user_email",
+        tokenResponse.user_email
+      );
       const combinedCookies = `${accessTokenCookie}, ${instanceUrlCookie}`;
       return {
         statusCode: 302,
@@ -128,7 +155,7 @@ export async function handler(event, context) {
           Location: "/homepage.html",
         },
         multiValueHeaders: {
-          "Set-Cookie": [accessTokenCookie, instanceUrlCookie],
+          "Set-Cookie": [accessTokenCookie, instanceUrlCookie, userNameCookie, userEmailCookie],
         },
       };
     } catch (error) {
