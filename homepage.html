@@ -169,8 +169,9 @@
         const soqlPreviewDiv = document.getElementById("soql-preview");
         const resultsDiv = document.getElementById("results");
 
+        soqlPreviewDiv.style.display = "block";
         soqlPreviewDiv.textContent = "Converting to SOQL...";
-        resultsDiv.textContent = "Processing query...";
+        resultsDiv.style.display = "none";
 
         try {
           // First, convert to SOQL
