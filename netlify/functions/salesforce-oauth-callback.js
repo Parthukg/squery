@@ -115,11 +115,11 @@ export async function handler(event, context) {
       console.log("Token Response:", tokenResponse);
 
       const accessTokenCookie = setCookie(
-        "sf_access_token",
+        "sf_access_token_1",
         tokenResponse.access_token
       );
       const instanceUrlCookie = setCookie(
-        "sf_instance_url",
+        "sf_instance_url_1",
         tokenResponse.instance_url
       );
       const combinedCookies = `${accessTokenCookie}, ${instanceUrlCookie}`;
