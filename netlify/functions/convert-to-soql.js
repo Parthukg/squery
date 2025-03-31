@@ -86,7 +86,7 @@ async function convertToSOQL(query) {
 
 async function executeSalesforceQuery(soqlQuery, accessToken, instanceUrl) {
     console.log('Executing SOQL Query:', soqlQuery);
-
+    soqlQuery = JSON.parse(soqlQuery).query;
     const response = await fetch(`${instanceUrl}/services/data/v52.0/query?q=${encodeURIComponent(soqlQuery)}`, {
         method: 'GET',
         headers: {
