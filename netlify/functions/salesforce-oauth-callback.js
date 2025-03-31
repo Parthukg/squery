@@ -43,11 +43,11 @@ async function exchangeCodeForToken(code, loginUrl) {
 
 function setCookie(name, value, options = {}) {
     const cookieOptions = {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 3600, // 1 hour
-      path: '/',
+      HttpOnly: true,
+      Secure: true,
+      SameSite: 'Strict',
+      'Max-Age': 3600, // 1 hour
+      Path: '/',
       ...options
     };
   
@@ -111,7 +111,7 @@ export async function handler(event, context) {
             
             const accessTokenCookie = setCookie('sf_access_token', tokenResponse.access_token);
             const instanceUrlCookie = setCookie('sf_instance_url', tokenResponse.instance_url);
-            
+
             // Redirect to homepage with token information
             return {
                 statusCode: 302,
