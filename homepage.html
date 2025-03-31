@@ -122,7 +122,11 @@
             }
         });
 
-        async function executeQuery() {
+        async function executeQuery(event) {
+            if (event) {
+                event.preventDefault(); // Prevent the form from submitting normally
+            }
+            
             const queryInput = document.getElementById('query-input').value;
             const soqlPreviewDiv = document.getElementById('soql-preview');
             const resultsDiv = document.getElementById('results');
@@ -131,11 +135,11 @@
             resultsDiv.textContent = 'Processing query...';
             
             try {
-                const soqlQuery = await convertToSOQL(queryInput);
-                soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQuery}`;
+                const soqlQueryObj = await convertToSOQL(queryInput);
+                soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQueryObj.query}`;
                 
-                const queryResults = await executeSalesforceQuery(soqlQuery);
-                resultsDiv.textContent = JSON.stringify(queryResults, null, 2);
+                const queryResults = await executeSalesforceQuery(soqlQueryObj);
+                displayResults(queryResults);
             } catch (error) {
                 resultsDiv.textContent = `Error: ${error.message}`;
             }
@@ -158,20 +162,34 @@
             return data.soql;
         }
 
-        async function executeSalesforceQuery(soqlQuery) {
+        async function executeSalesforceQuery(soqlQueryObj) {
             const accessToken = sessionStorage.getItem('accessToken');
             const instanceUrl = sessionStorage.getItem('instanceUrl');
             
+            if (!accessToken || !instanceUrl) {
+                throw new Error('Salesforce authentication information not found. Please log in again.');
+            }
+        
+            // Extract the actual SOQL query from the object
+            const soqlQuery = soqlQueryObj.query;
+        
+            if (!soqlQuery) {
+                throw new Error('Invalid SOQL query format');
+            }
+        
             const response = await fetch(`${instanceUrl}/services/data/v52.0/query?q=${encodeURIComponent(soqlQuery)}`, {
+                method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
-                },
+                    'Content-Type': 'application/json'
+                }
             });
-            
+        
             if (!response.ok) {
-                throw new Error('Failed to execute Salesforce query');
+                const errorBody = await response.text();
+                throw new Error(`Salesforce API error: ${response.status} ${response.statusText}\n${errorBody}`);
             }
-            
+        
             return await response.json();
         }
 
