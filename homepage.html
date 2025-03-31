@@ -152,8 +152,8 @@
                 const soqlQuery = conversionData.soql;
 
                 console.log('SOQL Query:', soqlQuery);
-                soqlQuery = JSON.parse(soqlQuery).query;
-                soqlPreviewDiv.textContent = `Generated SOQL:\n${soqlQuery}`;
+                const query = JSON.parse(soqlQuery).query;
+                soqlPreviewDiv.textContent = `Generated SOQL:\n${query}`;
 
                 // Then, execute the SOQL query
                 const accessToken = sessionStorage.getItem('accessToken');
