@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import cookie from 'cookie';
+//import cookie from 'cookie';
 
 function initiateOAuth(loginUrl) {
     const clientId = process.env.SALESFORCE_CLIENT_ID;
@@ -39,6 +39,26 @@ async function exchangeCodeForToken(code, loginUrl) {
 
     return await response.json();
 }
+
+
+function setCookie(name, value, options = {}) {
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 3600, // 1 hour
+      path: '/',
+      ...options
+    };
+  
+    const cookieString = Object.entries(cookieOptions).reduce((acc, [key, value]) => {
+      if (value === true) return `${acc}${key};`;
+      if (value === false) return acc;
+      return `${acc}${key}=${value};`;
+    }, `${name}=${value};`);
+  
+    return cookieString;
+  }
 
 export async function handler(event, context) {
     console.log('Function invoked. HTTP Method:', event.httpMethod);
@@ -89,21 +109,9 @@ export async function handler(event, context) {
             const tokenResponse = await exchangeCodeForToken(code, loginUrl);
             console.log('Token Response:', tokenResponse);
             
-            const accessTokenCookie = cookie.serialize('sf_access_token', tokenResponse.access_token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'strict',
-                maxAge: 3600, // 1 hour
-                path: '/'
-            });
-
-            const instanceUrlCookie = cookie.serialize('sf_instance_url', tokenResponse.instance_url, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'strict',
-                maxAge: 3600, // 1 hour
-                path: '/'
-            });
+            const accessTokenCookie = setCookie('sf_access_token', tokenResponse.access_token);
+            const instanceUrlCookie = setCookie('sf_instance_url', tokenResponse.instance_url);
+            
             // Redirect to homepage with token information
             return {
                 statusCode: 302,
