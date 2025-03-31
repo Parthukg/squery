@@ -110,15 +110,13 @@ export async function handler(event, context) {
             console.log('Token Response:', tokenResponse);
             
             const accessTokenCookie = setCookie('sf_access_token', tokenResponse.access_token);
-      const instanceUrlCookie = setCookie('sf_instance_url', tokenResponse.instance_url);
-      const combinedCookies = `${accessTokenCookie} ${instanceUrlCookie}`;
+            const instanceUrlCookie = setCookie('sf_instance_url', tokenResponse.instance_url);
 
-            // Redirect to homepage with token information
             return {
                 statusCode: 302,
-                headers: {
-                    'Location': '/homepage.html',
-                    'Set-Cookie': combinedCookies
+                multiValueHeaders: {
+                'Set-Cookie': [accessTokenCookie, instanceUrlCookie],
+                'Location': ['/homepage.html']
                 }
             };
         } catch (error) {
